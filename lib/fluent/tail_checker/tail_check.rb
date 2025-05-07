@@ -14,5 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative "tail_checker/tail_check"
-require_relative "tail_checker/version"
+module Fluent
+  module TailChecker
+    class TailCheck
+      def run
+        # TODO
+        puts "TailCheck command run."
+        true
+      end
+    end
+  end
+end

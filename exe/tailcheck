@@ -3,4 +3,7 @@
 
 require 'fluent/tail_checker'
 
-Fluent::TailChecker.run
+puts Fluent::TailChecker::VERSION
+
+command = Fluent::TailChecker::TailCheck.new
+exit(command.run)
