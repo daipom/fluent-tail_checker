@@ -32,10 +32,8 @@ jobs:
         os: ['ubuntu-latest', 'windows-latest']
         include:
           - os: ubuntu-latest
-            testfile: test/script/command-test.bash
             shell: bash
           - os: windows-latest
-            testfile: test/script/command-test.bat
             shell: cmd
     runs-on: ${{ matrix.os }}
     name: Gem with Ruby ${{ matrix.ruby }} on ${{ matrix.os }}
@@ -48,6 +46,11 @@ jobs:
           bundler-cache: true
       - name: Install
         run: rake install
-      - name: Test command
-        run: ${{ matrix.testfile }}
-        shell: ${{ matrix.shell }}
+      - name: Test command (bash)
+        if: ${{ matrix.shell == 'bash' }}
+        run: test/script/command-test.bash
+        shell: bash
+      - name: Test command (cmd)
+        if: ${{ matrix.shell == 'cmd' }}
+        run: test/script/command-test.bat
+        shell: cmd
