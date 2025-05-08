@@ -30,7 +30,8 @@ jobs:
       fail-fast: false
       matrix:
         ruby: ['3.4', '3.3', '3.2']
-        os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
+        # macOS is excluded because of the difficulty in assuming a macOS shell behavior.
+        os: ['ubuntu-latest', 'windows-latest']
     runs-on: ${{ matrix.os }}
     name: Gem with Ruby ${{ matrix.ruby }} on ${{ matrix.os }}
     steps:
