@@ -32,6 +32,13 @@ jobs:
         ruby: ['3.4', '3.3', '3.2']
         # macOS is excluded because of the difficulty in assuming a macOS shell behavior.
         os: ['ubuntu-latest', 'windows-latest']
+        include:
+          - os: ubuntu-latest
+            testfile: test/script/command-test.bash
+            shell: bash
+          - os: windows-latest
+            testfile: test/script/command-test.bat
+            shell: cmd
     runs-on: ${{ matrix.os }}
     name: Gem with Ruby ${{ matrix.ruby }} on ${{ matrix.os }}
     steps:
@@ -44,4 +51,5 @@ jobs:
       - name: Install
         run: rake install
       - name: Test command
-        run: test/script/command-test.bash
+        run: ${{ matrix.testfile }}
+        shell: ${{ matrix.shell }}
