@@ -22,8 +22,12 @@ module Fluent
     class PosFile
       attr_reader :entries
 
-      def initialize(path)
-        @entries = PosFile.load_entries(path)
+      def initialize(entries)
+        @entries = entries
+      end
+
+      def self.load(path)
+        PosFile.new(PosFile.load_entries(path))
       end
 
       def self.load_entries(path)
