@@ -42,6 +42,5 @@ jobs:
           bundler-cache: true
       - name: Install
         run: rake install
-      - name: Run exe
-        run: |
-          tailcheck
+      - name: Test command
+        run: test/script/command-test.bash

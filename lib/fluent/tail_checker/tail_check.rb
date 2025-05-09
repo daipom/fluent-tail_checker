@@ -14,13 +14,89 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require "optparse"
+
+require_relative "pos"
+require_relative "duplicated_pos_checker"
+
 module Fluent
   module TailChecker
     class TailCheck
-      def run
-        # TODO
-        puts "TailCheck command run."
+      def initialize
+        @pos_filepaths = []
+        @follow_inodes = false
+      end
+
+      def run(argv=ARGV)
+        parse_command_line(argv)
+        @pos_filepaths = validate_paths(@pos_filepaths).to_a
+        check
+      end
+
+      def parse_command_line(argv)
+        parser = OptionParser.new
+        parser.version = VERSION
+        parser.banner = <<~BANNER
+          Usage: tailcheck [OPTIONS] POS_FILE...
+          Example: tailcheck /path/to/pos1 /path/to/pos2
+          Example: tailcheck /path/to/pos/*
+          Example: tailcheck --follow_inodes /path/to/pos_with_follow_inodes
+          Options:
+
+        BANNER
+
+        parser.on("--follow_inodes", "Check the specified pos files with the condition that the follow_inodes feature is enabled.", "Default: Disabled") do
+          @follow_inodes = true
+        end
+
+        @pos_filepaths = parser.parse(argv)
+      end
+
+      def validate_paths(paths)
+        Enumerator.new do |y|
+          paths.each do |path|
+            unless FileTest.exist?(path)
+              $stderr.puts "File does not exist. Skipped. Path: #{path}"
+              next
+            end
+
+            y << path
+          end
+        end
+      end
+
+      def check
+        if @pos_filepaths.empty?
+          $stderr.puts "No pos_file to be checked. Please specify valid pos_file paths."
+          return false
+        end
+
+        succeeded = true
+
+        @pos_filepaths.each do |path|
+          puts "\nCheck #{path}."
+          succeeded = check_pos_file(path) && succeeded
+        end
+
+        puts "\nAll check completed."
+
+        unless succeeded
+          puts "Some anomalies are found. Please check whether there is any log loss."
+          # TODO add message about how to concact the community or us.
+          return false
+        end
+
+        puts "There is no anomalies."
         true
+      end
+
+      def check_pos_file(path)
+        succeeded = true
+        posfile = PosFile.new(path)
+        succeeded = DuplicatedPosChecker.new(posfile, @follow_inodes).check && succeeded
+        succeeded
+      rescue => e
+        $stderr.puts "Can not open the file. Skipped. Path: #{path}, Error: #{e}"
       end
     end
   end

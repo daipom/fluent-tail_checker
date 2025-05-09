@@ -1,9 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'fluent/tail_checker'
-
-puts Fluent::TailChecker::VERSION
+require "fluent/tail_checker"
 
 command = Fluent::TailChecker::TailCheck.new
 exit(command.run)
