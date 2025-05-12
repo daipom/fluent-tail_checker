@@ -65,7 +65,7 @@ jobs:
           - ruby: '2.7.1'
             fluentd: '1.11.1'
     runs-on: ${{ matrix.os }}
-    name: Gem test with Ruby ${{ matrix.ruby }} on ${{ matrix.os }}
+    name: Gem with Ruby ${{ matrix.ruby }} on ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
@@ -88,3 +88,79 @@ jobs:
         if: ${{ matrix.shell == 'cmd' }}
         run: test/script/command-test.bat
         shell: cmd
+
+  gem-test-with-package:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        test:
+          - td-agent-v3.1.1.el7-test.bash
+          - td-agent-v4.0.0.el8-test.bash
+          - fluent-package-v5.0.1.el9-test.bash
+          - td-agent-v3.1.1.xenial-test.bash
+          - td-agent-v4.0.0.focal-test.bash
+          - fluent-package-v5.0.1.jammy-test.bash
+        include:
+          - test: td-agent-v3.1.1.el7-test.bash
+            vm: centos-7
+          - test: td-agent-v4.0.0.el8-test.bash
+            vm: rockylinux-8
+          - test: fluent-package-v5.0.1.el9-test.bash
+            vm: almalinux-9
+          - test: td-agent-v3.1.1.xenial-test.bash
+            vm: ubuntu-xenial
+          - test: td-agent-v4.0.0.focal-test.bash
+            vm: ubuntu-focal
+          - test: fluent-package-v5.0.1.jammy-test.bash
+            vm: ubuntu-jammy
+    runs-on: ubuntu-latest
+    name: ${{ matrix.test }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: gem
+          path: pkg
+      - name: Set up VirtualBox
+        run: |
+          sudo apt update
+          sudo apt install -y virtualbox
+      - name: Set up Vagrant
+        run: |
+          wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt update && sudo apt install -y vagrant
+          vagrant --version
+          vagrant status
+      - name: Test
+        run: |
+          vagrant up ${{ matrix.vm }}
+          vagrant ssh ${{ matrix.vm }} -- /vagrant/test/script/${{ matrix.test }}
+
+  gem-test-with-msi-package:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        test:
+          - td-agent-v3.1.1.msi-test.ps1
+          - td-agent-v4.0.0.msi-test.ps1
+          - fluent-package-v5.0.1.msi-test.ps1
+        include:
+          - test: td-agent-v3.1.1.msi-test.ps1
+            os: windows-2019
+          - test: td-agent-v4.0.0.msi-test.ps1
+            os: windows-2019
+          - test: fluent-package-v5.0.1.msi-test.ps1
+            os: windows-latest
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.test }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: gem
+          path: pkg
+      - name: Test
+        run: test/script/${{ matrix.test }}
