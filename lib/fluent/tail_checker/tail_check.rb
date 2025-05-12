@@ -18,6 +18,7 @@ require "optparse"
 
 require_relative "pos"
 require_relative "duplicated_pos_checker"
+require_relative "collection_ratio_checker"
 
 module Fluent
   module TailChecker
@@ -75,7 +76,11 @@ module Fluent
 
         @pos_filepaths.each do |path|
           puts "\nCheck #{path}."
-          succeeded = check_pos_file(path) && succeeded
+          pos_file = try_to_open_pos_file(path)
+          next if pos_file.nil?
+
+          succeeded = DuplicatedPosChecker.new(pos_file, @follow_inodes).check && succeeded
+          succeeded = CollectionRatioChecker.new(pos_file, @follow_inodes).check && succeeded
         end
 
         puts "\nAll check completed."
@@ -90,11 +95,8 @@ module Fluent
         true
       end
 
-      def check_pos_file(path)
-        succeeded = true
-        posfile = PosFile.new(path)
-        succeeded = DuplicatedPosChecker.new(posfile, @follow_inodes).check && succeeded
-        succeeded
+      def try_to_open_pos_file(path)
+        PosFile.load(path)
       rescue => e
         $stderr.puts "Can not open the file. Skipped. Path: #{path}, Error: #{e}"
       end

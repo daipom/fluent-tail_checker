@@ -73,10 +73,51 @@ class Fluent::TailCheckerTest < Test::Unit::TestCase
     data("Duplicated unwatched paths with follow_inodes", [["test/data/pos_duplicate_unwatched_path"], true, true])
     data("Normal multiple", [["test/data/pos_follow_inodes_normal", "test/data/pos_duplicate_unwatched_path"], true, true])
     data("Anomaly multiple", [["test/data/pos_follow_inodes_normal", "test/data/pos_duplicate_unwatched_inode"], true, false])
-    test "Return false when an anomaly is detected or there is no target" do |(paths, follow_inodes, expected)|
+    test "Return false when duplicated pos is detected or there is no target" do |(paths, follow_inodes, expected)|
       tail_check = Fluent::TailChecker::TailCheck.new
       tail_check.instance_variable_set(:@pos_filepaths, paths)
       tail_check.instance_variable_set(:@follow_inodes, follow_inodes)
+
+      result = tail_check.check
+
+      assert_equal(expected, result)
+    end
+
+    data("Acceptable ratio", [0.9, true])
+    data("Too low ratio", [0.7, false])
+    test "Return false when too low collection ratio is detected" do |(stub_ratio, expected)|
+      any_instance_of(Fluent::TailChecker::CollectionRatioChecker) do |checker|
+        mock(checker).get_file_size_from_path(anything).at_least(1) do |pos_entry|
+          # collection ratio = pos / file size
+          # => file size = pos / collection ratio
+          pos_entry.pos / stub_ratio
+        end
+        mock(checker).get_file_size_from_inode.never
+      end
+
+      tail_check = Fluent::TailChecker::TailCheck.new
+      tail_check.instance_variable_set(:@pos_filepaths, ["test/data/pos_normal"])
+
+      result = tail_check.check
+
+      assert_equal(expected, result)
+    end
+
+    data("Acceptable ratio", [0.9, true])
+    data("Too low ratio", [0.7, false])
+    test "Return false when too low collection ratio is detected (follow_inodes)" do |(stub_ratio, expected)|
+      any_instance_of(Fluent::TailChecker::CollectionRatioChecker) do |checker|
+        mock(checker).get_file_size_from_path.never
+        mock(checker).get_file_size_from_inode(anything).at_least(1) do |pos_entry|
+          # collection ratio = pos / file size
+          # => file size = pos / collection ratio
+          pos_entry.pos / stub_ratio
+        end
+      end
+
+      tail_check = Fluent::TailChecker::TailCheck.new
+      tail_check.instance_variable_set(:@pos_filepaths, ["test/data/pos_follow_inodes_normal"])
+      tail_check.instance_variable_set(:@follow_inodes, true)
 
       result = tail_check.check
 

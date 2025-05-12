@@ -28,15 +28,19 @@ module Fluent
         duplicated_key_found = false
         key_set = Set.new
         duplicated_key_set = Set.new
+        checked_key_counts = 0
 
         @posfile.watching_entries.map do |entry|
           @follow_inodes ? entry.ino : entry.path
         end.each do |key|
+          checked_key_counts += 1
           next if key_set.add?(key)
 
           duplicated_key_found = true
           duplicated_key_set.add(key)
         end
+
+        puts "Checked duplicated pos for #{checked_key_counts} PosEntries."
 
         if duplicated_key_found
           log_issue(duplicated_key_set)
