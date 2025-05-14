@@ -1,38 +1,287 @@
-# Fluent::TailChecker
+# tailcheck
 
-TODO: Delete this and the text below, and describe your gem
+`tailcheck` is a command for [Fluentd](https://www.fluentd.org/).
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/fluent/tail_checker`. To experiment with that code, run `bin/console` for an interactive prompt.
+This command checks whether [in_tail](https://docs.fluentd.org/input/tail) plugin is collecting logs properly.
+For example, this command verifies whether a known critical log missing issue is occurring.
+
+Known critical log missing issues:
+
+* https://github.com/fluent/fluentd/issues/3614
+  * In case `follow_inodes false` (default setting), collection of a file may stop and continue to stop after log rotation.
+  * Fixed since Fluentd v1.16.3 (fluent-package v5.0.2, td-agent v4.5.2).
+* https://github.com/fluent/fluentd/issues/4190
+  * In case `follow_inodes true`, collection of a file may stop and continue to stop after log rotation.
+  * Fixed since Fluentd v1.16.2 (fluent-package v5.0.0, td-agent v4.5.1).
+
+This command allows you to check whether these issues are occurring on your Fluentd.
+
+## Requirements
+
+|  tailcheck   | fluentd | td-agent | fluent-package |
+|--------------|---------|----------|----------------|
+| all versions | >= v1.0 | >= 3.1.1 | >= 5.0.0       |
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+### fluent-package
 
-Install the gem and add to the application's Gemfile by executing:
+#### RPM/DEB (Linux)
 
-```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```console
+$ sudo fluent-gem install fluent-tail_checker
 ```
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+Then, you can use the command as follows.
 
-```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```console
+$ /opt/fluent/bin/tailcheck --help
+```
+
+#### .msi (Windows)
+
+`Fluent Package Command Prompt` with Administrator privilege:
+
+```console
+$ fluent-gem install fluent-tail_checker
+```
+
+Then, you can use the command as follows.
+
+```console
+$ tailcheck --help
+```
+
+### For td-agent v4
+
+#### RPM/DEB (Linux)
+
+```console
+$ sudo td-agent-gem install fluent-tail_checker
+```
+
+Then, you can use the command as follows.
+
+```console
+$ /opt/td-agent/bin/tailcheck --help
+```
+
+#### .msi (Windows)
+
+`Td-agent Command Prompt` with Administrator privilege:
+
+```console
+$ td-agent-gem install fluent-tail_checker
+```
+
+Then, you can use the command as follows.
+
+```console
+$ tailcheck --help
+```
+
+### For td-agent v3
+
+#### RPM/DEB (Linux)
+
+```console
+$ sudo td-agent-gem install fluent-tail_checker
+```
+
+Then, you can use the command as follows.
+
+```console
+$ /opt/td-agent/embedded/lib/ruby/gems/2.4.0/bin/tailcheck --help
+```
+
+#### .msi (Windows)
+
+`Td-agent Command Prompt` with Administrator privilege:
+
+```console
+$ fluent-gem install fluent-tail_checker
+```
+
+Then, you can use the command as follows.
+
+```console
+$ tailcheck --help
+```
+
+### For your Ruby environment
+
+```console
+$ gem install fluent-tail_checker
+```
+
+Then, you can use the command as follows.
+
+```console
+$ tailcheck --help
 ```
 
 ## Usage
 
-TODO: Write usage instructions here
+### Help
+
+```console
+$ tailcheck --help
+```
+
+### Version
+
+```console
+$ tailcheck --version
+```
+
+### Check pos files
+
+You can specify a path of a pos file to check:
+
+```console
+$ tailcheck /var/log/td-agent/pos/secure
+```
+
+You can specify multiple paths:
+
+```console
+$ tailcheck /var/log/td-agent/pos/secure /var/log/td-agent/pos/message
+```
+
+You can use wildcards:
+
+```console
+$ tailcheck /var/log/td-agent/pos/*
+```
+
+If you use [follow_inodes](https://docs.fluentd.org/input/tail#follow_inodes), then you must specify `--follow_inodes` option.
+(If you have both settings that use `follow_inodes` and those that do not, please run the command separately.)
+
+```console
+$ tailcheck --follow_inodes /var/log/td-agent/pos/secure
+```
+
+### Result example
+
+#### No anomalies found
+
+```
+Check /path/to/pos.
+Checked duplicated pos for 2 PosEntries.
+Checked collection ratio of 2 files.
+
+All check completed.
+There is no anomalies.
+```
+
+This means:
+
+* The command has checked `/path/to/pos`.
+* The command has checked 2 entries for duplication check.
+* The command has checked 2 files for collection ratio check.
+* There is no anomalies.
+
+#### Pos duplication found
+
+```
+Check /path/to/pos.
+Checked duplicated pos for 3 PosEntries.
+Duplicated PosEntries are found. This is a known log loss issue that was fixed in Fluentd v1.16.3.
+Duplicated keys:
+  /test/foo.log
+Checked collection ratio of 0 files.
+
+All check completed.
+Some anomalies are found. Please check whether there is any log loss.
+```
+
+In this case, some keys of the pos entries are duplicated.
+It is a known log missing issue that was fixed in Fluentd v1.16.3.
+
+> * https://github.com/fluent/fluentd/issues/3614
+>   * In case `follow_inodes false` (default setting), collection of a file may stop and continue to stop after log rotation.
+>   * Fixed since Fluentd v1.16.3 (fluent-package v5.0.2, td-agent v4.5.2).
+
+So, you should check whether there is any log missing, and consider updating, especially, if your version is before Fluentd v1.16.3 (fluent-package v5.0.2, td-agent v4.5.2).
+
+#### Too low collection ratio file found
+
+```
+Check /path/to/pos.
+Checked duplicated pos for 2 PosEntries.
+Checked collection ratio of 2 files.
+Collection ratio of some files are too low. Collection of those files may have stopped or may not be keeping up.
+Filepaths with too low collection ratio (threshold: 0.8):
+  /test/bar.log (ratio: 0.7)
+  /test/foo.log (ratio: 0.7)
+
+All check completed.
+Some anomalies are found. Please check whether there is any log loss.
+```
+
+In this case, collection ratio of some target files are too low.
+Collection of those files may have stopped or may not be keeping up.
+
+> /test/bar.log (ratio: 0.7)
+
+This means that only 70% of the data of the file is collected for the filesize.
+If it is not keeping up temporarily, then it is no problem.
+If this is always the case, or if collection has stopped completely, then log missing may occur.
+
+Especially, if the `in_tail` uses [follow_inodes](https://docs.fluentd.org/input/tail#follow_inodes), there is a known log missing issue that was fixed in Fluentd v1.16.2.
+
+> * https://github.com/fluent/fluentd/issues/4190
+>   * In case `follow_inodes true`, collection of a file may stop and continue to stop after log rotation.
+>   * Fixed since Fluentd v1.16.2 (fluent-package v5.0.0, td-agent v4.5.1).
+
+If this issue is occurring, this too low collection ratio is detected.
+In that case, please consider updating if your version is before Fluentd v1.16.2 (td-agent v4.5.1).
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+### Quick start
+
+```console
+$ bundle
+$ bundle exec exe/tailcheck --version
+$ bundle exec exe/tailcheck --help
+$ bundle exec exe/tailcheck test/data/pos_duplicate_unwatched_path
+```
+
+### Unit test
+
+```console
+$ bundle exec rake test
+```
+
+### Package test
+
+Need `Vagrant`.
+
+```console
+$ vagrant status
+$ vagrant up {id}
+$ vagrant snapshot save {id} init
+$ vagrant ssh {id} -- /vagrant/test/script/{test-script}
+$ vagrant snapshot restore {id} init
+```
+
+Example:
+
+```console
+$ vagrant up centos-7
+$ vagrant snapshot save centos-7 init
+$ vagrant ssh centos-7 -- /vagrant/test/script/td-agent-v3.1.1.el7-test.bash
+$ vagrant snapshot restore centos-7 init
+```
+
+### Install and release
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/fluent-tail_checker.
+Bug reports and pull requests are welcome on GitHub at https://github.com/clear-code/fluent-tail_checker.
 
 ## Copyright
 
