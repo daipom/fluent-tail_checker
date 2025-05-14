@@ -40,7 +40,7 @@ module Fluent
           duplicated_key_set.add(key)
         end
 
-        puts "Checked duplicated pos for #{checked_key_counts} PosEntries."
+        puts "Done duplication check for #{checked_key_counts} PosEntries."
 
         if duplicated_key_found
           log_issue(duplicated_key_set)
@@ -52,12 +52,13 @@ module Fluent
 
       def log_issue(duplicated_keys)
         if @follow_inodes
-          puts "Duplicated PosEntries are found with follow_inodes. Unknown anomalies may be occurring."
+          puts "Duplicated PosEntries are found. Unknown anomalies may be occurring. It is recommended to verify whether there is any log missing."
+          puts "Duplicated inodes:"
         else
-          puts "Duplicated PosEntries are found. This is a known log loss issue that was fixed in Fluentd v1.16.3."
+          puts "Duplicated PosEntries are found. This is a known log missing issue that was fixed in Fluentd v1.16.3 (fluent-package v5.0.2, td-agent v4.5.2). If you are using any version older than these, updating Fluentd will resolve the issue."
+          puts "Duplicated paths:"
         end
 
-        puts "Duplicated keys:"
         duplicated_keys.each do |key|
           puts "  #{key}"
         end

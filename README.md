@@ -167,8 +167,8 @@ $ tailcheck --follow_inodes /var/log/td-agent/pos/secure
 
 ```
 Check /path/to/pos.
-Checked duplicated pos for 2 PosEntries.
-Checked collection ratio of 2 files.
+Done duplication check for 2 PosEntries.
+Done collection ratio check for 2 files.
 
 All check completed.
 There is no anomalies.
@@ -177,7 +177,7 @@ There is no anomalies.
 This means:
 
 * The command has checked `/path/to/pos`.
-* The command has checked 2 entries for duplication check.
+* The command has checked 2 pos entries for duplication check.
 * The command has checked 2 files for collection ratio check.
 * There is no anomalies.
 
@@ -185,32 +185,32 @@ This means:
 
 ```
 Check /path/to/pos.
-Checked duplicated pos for 3 PosEntries.
-Duplicated PosEntries are found. This is a known log loss issue that was fixed in Fluentd v1.16.3.
-Duplicated keys:
+Done duplication check for 3 PosEntries.
+Duplicated PosEntries are found. This is a known log missing issue that was fixed in Fluentd v1.16.3 (fluent-package v5.0.2, td-agent v4.5.2). If you are using any version older than these, updating Fluentd will resolve the issue.
+Duplicated paths:
   /test/foo.log
-Checked collection ratio of 0 files.
+Done collection ratio check for 0 files.
 
 All check completed.
 Some anomalies are found. Please check whether there is any log loss.
 ```
 
-In this case, some keys of the pos entries are duplicated.
+In this case, some the pos entries are duplicated.
 It is a known log missing issue that was fixed in Fluentd v1.16.3.
 
 > * https://github.com/fluent/fluentd/issues/3614
 >   * In case `follow_inodes false` (default setting), collection of a file may stop and continue to stop after log rotation.
 >   * Fixed since Fluentd v1.16.3 (fluent-package v5.0.2, td-agent v4.5.2).
 
-So, you should check whether there is any log missing, and consider updating, especially, if your version is before Fluentd v1.16.3 (fluent-package v5.0.2, td-agent v4.5.2).
+So, you should check whether there is any log missing, and consider updating Fluentd, especially, if you are using any version older than Fluentd v1.16.3 (fluent-package v5.0.2, td-agent v4.5.2).
 
 #### Too low collection ratio file found
 
 ```
 Check /path/to/pos.
-Checked duplicated pos for 2 PosEntries.
-Checked collection ratio of 2 files.
-Collection ratio of some files are too low. Collection of those files may have stopped or may not be keeping up.
+Done duplication check for 2 PosEntries.
+Done collection ratio check for 2 files.
+Collection ratio of some files are too low. Collection of those files may not be keeping up. Or it may have stopped with some anomalies. This can be a known log missing issue of the follow_inodes feature that was fixed in Fluentd v1.16.2 (fluent-package v5.0.0, td-agent v4.5.1). If you are using any version older than these, updating Fluentd will resolve the issue.
 Filepaths with too low collection ratio (threshold: 0.8):
   /test/bar.log (ratio: 0.7)
   /test/foo.log (ratio: 0.7)
@@ -234,8 +234,7 @@ Especially, if the `in_tail` uses [follow_inodes](https://docs.fluentd.org/input
 >   * In case `follow_inodes true`, collection of a file may stop and continue to stop after log rotation.
 >   * Fixed since Fluentd v1.16.2 (fluent-package v5.0.0, td-agent v4.5.1).
 
-If this issue is occurring, this too low collection ratio is detected.
-In that case, please consider updating if your version is before Fluentd v1.16.2 (td-agent v4.5.1).
+Please consider updating Fluentd if you are using any version older than Fluentd v1.16.2 (td-agent v4.5.1).
 
 ## Development
 

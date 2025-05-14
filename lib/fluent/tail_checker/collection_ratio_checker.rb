@@ -54,7 +54,7 @@ module Fluent
           end
         end
 
-        puts "Checked collection ratio of #{checked_file_counts} files."
+        puts "Done collection ratio check for #{checked_file_counts} files."
 
         if unacceptable_collection_ratio_found
           log_issue(unacceptable_collection_ratio_path_and_ratio_list)
@@ -96,9 +96,10 @@ module Fluent
       end
 
       def log_issue(path_and_ratio_list)
-        puts "Collection ratio of some files are too low. Collection of those files may have stopped or may not be keeping up."
         if @follow_inodes
-          puts "This can be a known log loss issue of the follow_inodes feature that was fixed in Fluentd v1.16.2."
+          puts "Collection ratio of some files are too low. Collection of those files may not be keeping up. Or it may have stopped with some anomalies. This can be a known log missing issue of the follow_inodes feature that was fixed in Fluentd v1.16.2 (fluent-package v5.0.0, td-agent v4.5.1). If you are using any version older than these, updating Fluentd will resolve the issue."
+        else
+          puts "Collection ratio of some files are too low. Collection of those files may not be keeping up. Or it may have stopped with some anomalies. It is recommended to verify whether there is any log missing."
         end
 
         puts "Filepaths with too low collection ratio (threshold: #{@collection_ratio_threshold}):"

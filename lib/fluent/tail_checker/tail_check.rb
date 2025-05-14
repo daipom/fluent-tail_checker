@@ -42,8 +42,10 @@ module Fluent
           Example: tailcheck /path/to/pos1 /path/to/pos2
           Example: tailcheck /path/to/pos/*
           Example: tailcheck --follow_inodes /path/to/pos_with_follow_inodes
-          Options:
 
+          If you have any issues with this command, please report it to https://github.com/clear-code/fluent-tail_checker/issues.
+
+          Options:
         BANNER
 
         parser.on("--follow_inodes", "Check the specified pos files with the condition that the follow_inodes feature is enabled.", "Default: Disabled") do
@@ -86,8 +88,11 @@ module Fluent
         puts "\nAll check completed."
 
         unless succeeded
-          puts "Some anomalies are found. Please check whether there is any log loss."
-          # TODO add message about how to concact the community or us.
+          puts "Some anomalies are found. Please check the logs for details."
+          puts "If you have any questions or issues, please report them to the following:"
+          puts "  Fluentd Q&A: https://github.com/fluent/fluentd/discussions/categories/q-a"
+          puts "  Fluentd Q&A (日本語用): https://github.com/fluent/fluentd/discussions/categories/q-a-japanese"
+          puts "  About this command (日本語可): https://github.com/clear-code/fluent-tail_checker/issues"
           return false
         end
 
