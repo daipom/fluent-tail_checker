@@ -26,6 +26,7 @@ module Fluent
       def initialize
         @pos_filepaths = []
         @follow_inodes = false
+        @collection_ratio_threshold = 0.5
       end
 
       def run(argv=ARGV)
@@ -51,8 +52,20 @@ module Fluent
         parser.on("--follow_inodes", "Check the specified pos files with the condition that the follow_inodes feature is enabled.", "Default: Disabled") do
           @follow_inodes = true
         end
+        parser.on("--ratio NUM", Float, "Minimum ratio of collection of each target log file to accept.", "Default: #{@collection_ratio_threshold}") do |v|
+          @collection_ratio_threshold = v
+        end
 
-        @pos_filepaths = parser.parse(argv)
+        begin
+          @pos_filepaths = parser.parse(argv)
+
+          if @collection_ratio_threshold < 0 or @collection_ratio_threshold > 1
+            raise OptionParser::InvalidArgument, "--ratio #{@collection_ratio_threshold} must be an decimal from 0 to 1."
+          end
+        rescue OptionParser::ParseError => e
+          $stderr.puts e, "", parser.help, ""
+          raise
+        end
       end
 
       def validate_paths(paths)
@@ -82,7 +95,7 @@ module Fluent
           next if pos_file.nil?
 
           succeeded = DuplicatedPosChecker.new(pos_file, @follow_inodes).check && succeeded
-          succeeded = CollectionRatioChecker.new(pos_file, @follow_inodes).check && succeeded
+          succeeded = CollectionRatioChecker.new(pos_file, @follow_inodes, @collection_ratio_threshold).check && succeeded
         end
 
         puts "\nAll check completed."

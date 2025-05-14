@@ -14,14 +14,14 @@ class Fluent::TailCheckerTest < Test::Unit::TestCase
       "Minimum",
       [
         ["/path/to/pos"],
-        { pos_filepaths: ["/path/to/pos"], follow_inodes: false },
+        { pos_filepaths: ["/path/to/pos"], follow_inodes: false, collection_ratio_threshold: 0.5 },
       ]
     )
     data(
       "Full",
       [
-        ["--follow_inodes", "/path/to/pos", "/path/to/pos2"],
-        { pos_filepaths: ["/path/to/pos", "/path/to/pos2"], follow_inodes: true },
+        ["--follow_inodes", "--ratio", "0.7", "/path/to/pos", "/path/to/pos2"],
+        { pos_filepaths: ["/path/to/pos", "/path/to/pos2"], follow_inodes: true, collection_ratio_threshold: 0.7 },
       ]
     )
     test "Correct args" do |(args, expected)|
@@ -32,15 +32,17 @@ class Fluent::TailCheckerTest < Test::Unit::TestCase
       result = {
         pos_filepaths: tail_check.instance_variable_get(:@pos_filepaths),
         follow_inodes: tail_check.instance_variable_get(:@follow_inodes),
+        collection_ratio_threshold: tail_check.instance_variable_get(:@collection_ratio_threshold),
       }
       assert_equal(expected, result)
     end
 
     data("Invalid options", ["--foo", "/path/to/pos"])
+    data("--ratio: invalid value: ", ["--ratio", "70", "/path/to/pos"])
     test "Raise error for invalid options" do |args|
       tail_check = Fluent::TailChecker::TailCheck.new
 
-      assert_raise(OptionParser::InvalidOption) do
+      assert_raise do
         tail_check.parse_command_line(args)
       end
     end
@@ -84,7 +86,7 @@ class Fluent::TailCheckerTest < Test::Unit::TestCase
     end
 
     data("Acceptable ratio", [0.9, true])
-    data("Too low ratio", [0.7, false])
+    data("Too low ratio", [0.3, false])
     test "Return false when too low collection ratio is detected" do |(stub_ratio, expected)|
       any_instance_of(Fluent::TailChecker::CollectionRatioChecker) do |checker|
         mock(checker).get_file_size_from_path(anything).at_least(1) do |pos_entry|
@@ -104,7 +106,7 @@ class Fluent::TailCheckerTest < Test::Unit::TestCase
     end
 
     data("Acceptable ratio", [0.9, true])
-    data("Too low ratio", [0.7, false])
+    data("Too low ratio", [0.3, false])
     test "Return false when too low collection ratio is detected (follow_inodes)" do |(stub_ratio, expected)|
       any_instance_of(Fluent::TailChecker::CollectionRatioChecker) do |checker|
         mock(checker).get_file_size_from_path.never

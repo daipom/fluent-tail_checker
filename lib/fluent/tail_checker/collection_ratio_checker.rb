@@ -31,10 +31,10 @@ end
 module Fluent
   module TailChecker
     class CollectionRatioChecker
-      def initialize(posfile, follow_inodes)
+      def initialize(posfile, follow_inodes, collection_ratio_threshold)
         @posfile = posfile
         @follow_inodes = follow_inodes
-        @collection_ratio_threshold = 0.8
+        @collection_ratio_threshold = collection_ratio_threshold
       end
 
       def check

@@ -161,6 +161,13 @@ If you use [follow_inodes](https://docs.fluentd.org/input/tail#follow_inodes), t
 $ tailcheck --follow_inodes /var/log/td-agent/pos/secure
 ```
 
+You can change the minimum ratio of collection of each target log file by specify `--ratio DECIMAL`.
+By default (`0.5`), the command detects log files that have not been collected up to 50% of the filesize.
+
+```
+$ tailcheck --ratio 0.7 /var/log/td-agent/pos/secure
+```
+
 ### Result example
 
 #### No anomalies found
@@ -211,9 +218,9 @@ Check /path/to/pos.
 Done duplication check for 2 PosEntries.
 Done collection ratio check for 2 files.
 Collection ratio of some files are too low. Collection of those files may not be keeping up. Or it may have stopped with some anomalies. This can be a known log missing issue of the follow_inodes feature that was fixed in Fluentd v1.16.2 (fluent-package v5.0.0, td-agent v4.5.1). If you are using any version older than these, updating Fluentd will resolve the issue.
-Filepaths with too low collection ratio (threshold: 0.8):
-  /test/bar.log (ratio: 0.7)
-  /test/foo.log (ratio: 0.7)
+Filepaths with too low collection ratio (threshold: 0.5):
+  /test/bar.log (ratio: 0.2)
+  /test/foo.log (ratio: 0.1)
 
 All check completed.
 Some anomalies are found. Please check whether there is any log loss.
@@ -222,9 +229,9 @@ Some anomalies are found. Please check whether there is any log loss.
 In this case, collection ratio of some target files are too low.
 Collection of those files may have stopped or may not be keeping up.
 
-> /test/bar.log (ratio: 0.7)
+> /test/bar.log (ratio: 0.2)
 
-This means that only 70% of the data of the file is collected for the filesize.
+This means that only 20% of the data of the file is collected for the filesize.
 If it is not keeping up temporarily, then it is no problem.
 If this is always the case, or if collection has stopped completely, then log missing may occur.
 
