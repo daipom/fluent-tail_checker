@@ -199,7 +199,11 @@ Duplicated paths:
 Done collection ratio check for 0 files.
 
 All check completed.
-Some anomalies are found. Please check whether there is any log loss.
+Some anomalies are found. Please check the logs for details.
+If you have any questions or issues, please report them to the following:
+  Fluentd Q&A: https://github.com/fluent/fluentd/discussions/categories/q-a
+  Fluentd Q&A (日本語用): https://github.com/fluent/fluentd/discussions/categories/q-a-japanese
+  About this command (日本語可): https://github.com/clear-code/fluent-tail_checker/issues
 ```
 
 In this case, some the pos entries are duplicated.
@@ -223,7 +227,11 @@ Filepaths with too low collection ratio (threshold: 0.5):
   /test/foo.log (ratio: 0.1)
 
 All check completed.
-Some anomalies are found. Please check whether there is any log loss.
+Some anomalies are found. Please check the logs for details.
+If you have any questions or issues, please report them to the following:
+  Fluentd Q&A: https://github.com/fluent/fluentd/discussions/categories/q-a
+  Fluentd Q&A (日本語用): https://github.com/fluent/fluentd/discussions/categories/q-a-japanese
+  About this command (日本語可): https://github.com/clear-code/fluent-tail_checker/issues
 ```
 
 In this case, collection ratio of some target files are too low.
