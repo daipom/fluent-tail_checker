@@ -42,14 +42,14 @@ module Fluent
           Usage: tailcheck [OPTIONS] POS_FILE...
           Example: tailcheck /path/to/pos1 /path/to/pos2
           Example: tailcheck /path/to/pos/*
-          Example: tailcheck --follow_inodes /path/to/pos_with_follow_inodes
+          Example: tailcheck --follow-inodes /path/to/pos_with_follow_inodes
 
           If you have any issues with this command, please report it to https://github.com/clear-code/fluent-tail_checker/issues.
 
           Options:
         BANNER
 
-        parser.on("--follow_inodes", "Check the specified pos files with the condition that the follow_inodes feature is enabled.", "Default: Disabled") do
+        parser.on("--follow-inodes", "Check the specified pos files with the condition that the follow_inodes feature is enabled.", "Default: Disabled") do
           @follow_inodes = true
         end
         parser.on("--ratio NUM", Float, "Minimum ratio of collection of each target log file to accept.", "Default: #{@collection_ratio_threshold}") do |v|

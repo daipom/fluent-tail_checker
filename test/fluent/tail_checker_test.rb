@@ -20,8 +20,15 @@ class Fluent::TailCheckerTest < Test::Unit::TestCase
     data(
       "Full",
       [
-        ["--follow_inodes", "--ratio", "0.7", "/path/to/pos", "/path/to/pos2"],
+        ["--follow-inodes", "--ratio", "0.7", "/path/to/pos", "/path/to/pos2"],
         { pos_filepaths: ["/path/to/pos", "/path/to/pos2"], follow_inodes: true, collection_ratio_threshold: 0.7 },
+      ]
+    )
+    data(
+      "--follow_inodes (using underscore)",
+      [
+        ["--follow_inodes", "/path/to/pos"],
+        { pos_filepaths: ["/path/to/pos"], follow_inodes: true, collection_ratio_threshold: 0.5 },
       ]
     )
     test "Correct args" do |(args, expected)|

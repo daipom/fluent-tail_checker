@@ -154,11 +154,11 @@ You can use wildcards:
 $ tailcheck /var/log/td-agent/pos/*
 ```
 
-If you use [follow_inodes](https://docs.fluentd.org/input/tail#follow_inodes), then you must specify `--follow_inodes` option.
+If you use [follow_inodes](https://docs.fluentd.org/input/tail#follow_inodes), then you must specify `--follow-inodes` option.
 (If you have both settings that use `follow_inodes` and those that do not, please run the command separately.)
 
 ```console
-$ tailcheck --follow_inodes /var/log/td-agent/pos/secure
+$ tailcheck --follow-inodes /var/log/td-agent/pos/secure
 ```
 
 You can change the minimum ratio of collection of each target log file by specify `--ratio DECIMAL`.
@@ -287,13 +287,13 @@ Especially, if the `in_tail` uses [follow_inodes](https://docs.fluentd.org/input
 
 `tailcheck` checks the sizes of logfiles based on the paths recorded in the pos files (except already unwatched pos entries).
 
-However, if using `--follow_inodes`, there is a restriction on which files can be checked.
-If using `--follow_inodes`, it is possible that `tailcheck` can not check the already rotated logfiles even if they are recorded in the pos files and are not unwatched yet.
+However, if using `--follow-inodes`, there is a restriction on which files can be checked.
+If using `--follow-inodes`, it is possible that `tailcheck` can not check the already rotated logfiles even if they are recorded in the pos files and are not unwatched yet.
 Since the path recorded in the pos file is not updated after log rotation, the current path and inode may differ.
 `tailcheck` checks only log files whose path and inode in the pos file match.
 At least, it can check the current log files.
 
-If not using `--follow_inodes`, this limitation does not exist.
+If not using `--follow-inodes`, this limitation does not exist.
 
 ## Development
 
