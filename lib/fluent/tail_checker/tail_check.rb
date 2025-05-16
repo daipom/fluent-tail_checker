@@ -45,6 +45,9 @@ module Fluent
           Example: fluent-tailcheck /path/to/pos/*
           Example: fluent-tailcheck --follow-inodes /path/to/pos_with_follow_inodes
 
+          Requires read permission to the specified pos files and the target log files.
+          Example: sudo fluent-tailcheck /path/to/pos1
+
           If you have any issues with this command, please report it to https://github.com/clear-code/fluent-tail_checker/issues.
 
           Options:
@@ -73,7 +76,7 @@ module Fluent
         Enumerator.new do |y|
           paths.each do |path|
             unless FileTest.exist?(path)
-              $stderr.puts "File does not exist. Skipped. Path: #{path}"
+              $stderr.puts "Skip #{path} because it is not found. Make sure you have the proper privilege, e.g. 'sudo'."
               next
             end
 
@@ -117,7 +120,7 @@ module Fluent
       def try_to_open_pos_file(path)
         PosFile.load(path)
       rescue => e
-        $stderr.puts "Can not open the file. Skipped. Path: #{path}, Error: #{e}"
+        $stderr.puts "Can not open the file. Skipped. Make sure you have the proper privilege, e.g. 'sudo'. Path: #{path}, Error: #{e}"
       end
     end
   end

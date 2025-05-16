@@ -73,11 +73,18 @@ module Fluent
       end
 
       def get_file_size_from_path(pos_entry)
-        FileTest.size?(pos_entry.path)
+        size = FileTest.size?(pos_entry.path)
+        unless size
+          $stderr.puts "Skip #{pos_entry.path} because it is not found. Make sure you have the proper privilege, e.g. 'sudo'."
+        end
+        size
       end
 
       def get_file_size_from_inode(pos_entry)
-        return nil unless FileTest.exist?(pos_entry.path)
+        unless FileTest.exist?(pos_entry.path)
+          $stderr.puts "Skip #{pos_entry.path} because it is not found. Make sure you have the proper privilege, e.g. 'sudo'."
+          return nil
+        end
 
         stat = Fluent::FileWrapper.stat(pos_entry.path)
         # If follow_inodes is enabled, the inode of the current logfile should match the inode in the pos_file.

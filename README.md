@@ -168,6 +168,16 @@ By default (`0.5`), the command detects log files that have not been collected u
 $ fluent-tailcheck --ratio 0.7 /var/log/td-agent/pos/secure
 ```
 
+### Permission
+
+`fluent-tailcheck` requires read permission to the specified pos files and the target log files.
+
+Please use `sudo` (on Linux-like) or a terminal with administrative privileges (on Windows).
+
+```console
+$ sudo fluent-tailcheck /var/log/td-agent/pos/secure
+```
+
 ### Result example
 
 #### No anomalies found
