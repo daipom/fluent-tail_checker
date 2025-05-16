@@ -177,7 +177,7 @@ Check /path/to/pos.
 Done duplication check for 2 PosEntries.
 Done collection ratio check for 2 files.
 
-All check completed.
+All check completed. (Fluentd v1.15.0)
 There is no anomalies.
 ```
 
@@ -186,6 +186,7 @@ This means:
 * The command has checked `/path/to/pos`.
 * The command has checked 2 pos entries for duplication check.
 * The command has checked 2 files for collection ratio check.
+* It is detected that the version of your Fluentd is v1.15.0.
 * There is no anomalies.
 
 #### Pos duplication found
@@ -198,7 +199,7 @@ Duplicated paths:
   /test/foo.log
 Done collection ratio check for 0 files.
 
-All check completed.
+All check completed. (Fluentd v1.15.0)
 Some anomalies are found. Please check the logs for details.
 If you have any questions or issues, please report them to the following:
   Fluentd Q&A: https://github.com/fluent/fluentd/discussions/categories/q-a
@@ -226,7 +227,7 @@ Filepaths with too low collection ratio (threshold: 0.5):
   /test/bar.log (ratio: 0.2)
   /test/foo.log (ratio: 0.1)
 
-All check completed.
+All check completed. (Fluentd v1.15.0)
 Some anomalies are found. Please check the logs for details.
 If you have any questions or issues, please report them to the following:
   Fluentd Q&A: https://github.com/fluent/fluentd/discussions/categories/q-a

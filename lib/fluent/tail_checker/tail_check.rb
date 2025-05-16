@@ -15,6 +15,7 @@
 # limitations under the License.
 
 require "optparse"
+require "fluent/version"
 
 require_relative "pos"
 require_relative "duplicated_pos_checker"
@@ -98,7 +99,7 @@ module Fluent
           succeeded = CollectionRatioChecker.new(pos_file, @follow_inodes, @collection_ratio_threshold).check && succeeded
         end
 
-        puts "\nAll check completed."
+        puts "\nAll check completed. (Fluentd v#{Fluent::VERSION})"
 
         unless succeeded
           puts "Some anomalies are found. Please check the logs for details."
