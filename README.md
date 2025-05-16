@@ -88,6 +88,13 @@ Please use `sudo` (on Linux-like) or a terminal with administrative privileges (
 $ sudo fluent-tailcheck /var/log/td-agent/pos/secure
 ```
 
+### Automation
+
+It would be a good idea to run this command periodically to make sure `in_tail` works properly.
+
+If any anomaly is detected, the command exits with an error (with a non-zero status).
+You can use the exit code for the automation.
+
 ### Result examples
 
 * [Result examples](doc/result-examples.md)
