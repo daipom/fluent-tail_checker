@@ -48,6 +48,8 @@ module Fluent
           Requires read permission to the specified pos files and the target log files.
           Example: sudo fluent-tailcheck /path/to/pos1
 
+          Document: https://github.com/clear-code/fluent-tail_checker/blob/main/README.md
+
           If you have any issues with this command, please report it to https://github.com/clear-code/fluent-tail_checker/issues.
 
           Options:
