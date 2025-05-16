@@ -7,7 +7,7 @@ sudo dnf install -y ./fluent-package-5.0.1-1.el9.x86_64.rpm
 
 sudo fluent-gem install /vagrant/pkg/*
 
-tailcheck=/opt/fluent/bin/tailcheck
+tailcheck=/opt/fluent/bin/fluent-tailcheck
 
 $tailcheck --version
 $tailcheck --help

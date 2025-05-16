@@ -7,7 +7,7 @@ sudo apt install -y ./td-agent_4.0.0-1_amd64.deb
 
 sudo td-agent-gem install /vagrant/pkg/*
 
-tailcheck=/opt/td-agent/bin/tailcheck
+tailcheck=/opt/td-agent/bin/fluent-tailcheck
 
 $tailcheck --version
 $tailcheck --help

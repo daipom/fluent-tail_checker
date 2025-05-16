@@ -7,7 +7,7 @@ sudo apt install -y ./fluent-package_5.0.1-1_amd64.deb
 
 sudo fluent-gem install /vagrant/pkg/*
 
-tailcheck=/opt/fluent/bin/tailcheck
+tailcheck=/opt/fluent/bin/fluent-tailcheck
 
 $tailcheck --version
 $tailcheck --help

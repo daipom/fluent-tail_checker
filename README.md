@@ -1,6 +1,6 @@
-# tailcheck
+# fluent-tailcheck
 
-`tailcheck` is a command for [Fluentd](https://www.fluentd.org/).
+`fluent-tailcheck` is a command for [Fluentd](https://www.fluentd.org/).
 
 This command checks whether [in_tail](https://docs.fluentd.org/input/tail) plugin is collecting logs properly.
 For example, this command verifies whether a known critical log missing issue is occurring.
@@ -18,9 +18,9 @@ This command allows you to check whether these issues are occurring on your Flue
 
 ## Requirements
 
-|  tailcheck   | fluentd | td-agent | fluent-package |
-|--------------|---------|----------|----------------|
-| all versions | >= v1.0 | >= 3.1.1 | >= 5.0.0       |
+| fluent-tailcheck | fluentd | td-agent | fluent-package |
+|------------------|---------|----------|----------------|
+| all versions     | >= v1.0 | >= 3.1.1 | >= 5.0.0       |
 
 ## Installation
 
@@ -35,7 +35,7 @@ $ sudo fluent-gem install fluent-tail_checker
 Then, you can use the command as follows.
 
 ```console
-$ /opt/fluent/bin/tailcheck --help
+$ /opt/fluent/bin/fluent-tailcheck --help
 ```
 
 #### .msi (Windows)
@@ -49,7 +49,7 @@ $ fluent-gem install fluent-tail_checker
 Then, you can use the command as follows.
 
 ```console
-$ tailcheck --help
+$ fluent-tailcheck --help
 ```
 
 ### For td-agent v4
@@ -63,7 +63,7 @@ $ sudo td-agent-gem install fluent-tail_checker
 Then, you can use the command as follows.
 
 ```console
-$ /opt/td-agent/bin/tailcheck --help
+$ /opt/td-agent/bin/fluent-tailcheck --help
 ```
 
 #### .msi (Windows)
@@ -77,7 +77,7 @@ $ td-agent-gem install fluent-tail_checker
 Then, you can use the command as follows.
 
 ```console
-$ tailcheck --help
+$ fluent-tailcheck --help
 ```
 
 ### For td-agent v3
@@ -91,7 +91,7 @@ $ sudo td-agent-gem install fluent-tail_checker
 Then, you can use the command as follows.
 
 ```console
-$ /opt/td-agent/embedded/lib/ruby/gems/2.4.0/bin/tailcheck --help
+$ /opt/td-agent/embedded/lib/ruby/gems/2.4.0/bin/fluent-tailcheck --help
 ```
 
 #### .msi (Windows)
@@ -105,7 +105,7 @@ $ fluent-gem install fluent-tail_checker
 Then, you can use the command as follows.
 
 ```console
-$ tailcheck --help
+$ fluent-tailcheck --help
 ```
 
 ### For your Ruby environment
@@ -117,7 +117,7 @@ $ gem install fluent-tail_checker
 Then, you can use the command as follows.
 
 ```console
-$ tailcheck --help
+$ fluent-tailcheck --help
 ```
 
 ## Usage
@@ -125,13 +125,13 @@ $ tailcheck --help
 ### Help
 
 ```console
-$ tailcheck --help
+$ fluent-tailcheck --help
 ```
 
 ### Version
 
 ```console
-$ tailcheck --version
+$ fluent-tailcheck --version
 ```
 
 ### Check pos files
@@ -139,33 +139,33 @@ $ tailcheck --version
 You can specify a path of a pos file to check:
 
 ```console
-$ tailcheck /var/log/td-agent/pos/secure
+$ fluent-tailcheck /var/log/td-agent/pos/secure
 ```
 
 You can specify multiple paths:
 
 ```console
-$ tailcheck /var/log/td-agent/pos/secure /var/log/td-agent/pos/message
+$ fluent-tailcheck /var/log/td-agent/pos/secure /var/log/td-agent/pos/message
 ```
 
 You can use wildcards:
 
 ```console
-$ tailcheck /var/log/td-agent/pos/*
+$ fluent-tailcheck /var/log/td-agent/pos/*
 ```
 
 If you use [follow_inodes](https://docs.fluentd.org/input/tail#follow_inodes), then you must specify `--follow-inodes` option.
 (If you have both settings that use `follow_inodes` and those that do not, please run the command separately.)
 
 ```console
-$ tailcheck --follow-inodes /var/log/td-agent/pos/secure
+$ fluent-tailcheck --follow-inodes /var/log/td-agent/pos/secure
 ```
 
 You can change the minimum ratio of collection of each target log file by specify `--ratio DECIMAL`.
 By default (`0.5`), the command detects log files that have not been collected up to 50% of the filesize.
 
 ```
-$ tailcheck --ratio 0.7 /var/log/td-agent/pos/secure
+$ fluent-tailcheck --ratio 0.7 /var/log/td-agent/pos/secure
 ```
 
 ### Result example
@@ -253,14 +253,14 @@ Please consider updating Fluentd if you are using any version older than Fluentd
 
 ## Feature
 
-`tailcheck` performs the following checks on the specified pos file.
+`fluent-tailcheck` performs the following checks on the specified pos file.
 
 * duplication check
 * collection ratio check
 
 ### Duplication check
 
-`tailcheck` checks whether there is any dulication in the specified pos files.
+`fluent-tailcheck` checks whether there is any dulication in the specified pos files.
 
 The keys of watching pos entries in one pos file must be unique.
 
@@ -276,9 +276,9 @@ Especially, the following log missing issue causes this duplication.
 
 ### Collection ratio check
 
-`tailcheck` checks collection ratio of each watching pos entry.
+`fluent-tailcheck` checks collection ratio of each watching pos entry.
 
-By default, `tailcheck` detects log files that have not been collected up to 50% of the filesize.
+By default, `fluent-tailcheck` detects log files that have not been collected up to 50% of the filesize.
 You can change this threshold by `--ratio` option.
 Please see `Usage` section for details.
 
@@ -293,12 +293,12 @@ Especially, if the `in_tail` uses [follow_inodes](https://docs.fluentd.org/input
 
 #### Limitation
 
-`tailcheck` checks the sizes of logfiles based on the paths recorded in the pos files (except already unwatched pos entries).
+`fluent-tailcheck` checks the sizes of logfiles based on the paths recorded in the pos files (except already unwatched pos entries).
 
 However, if using `--follow-inodes`, there is a restriction on which files can be checked.
-If using `--follow-inodes`, it is possible that `tailcheck` can not check the already rotated logfiles even if they are recorded in the pos files and are not unwatched yet.
+If using `--follow-inodes`, it is possible that `fluent-tailcheck` can not check the already rotated logfiles even if they are recorded in the pos files and are not unwatched yet.
 Since the path recorded in the pos file is not updated after log rotation, the current path and inode may differ.
-`tailcheck` checks only log files whose path and inode in the pos file match.
+`fluent-tailcheck` checks only log files whose path and inode in the pos file match.
 At least, it can check the current log files.
 
 If not using `--follow-inodes`, this limitation does not exist.
@@ -309,9 +309,9 @@ If not using `--follow-inodes`, this limitation does not exist.
 
 ```console
 $ bundle
-$ bundle exec exe/tailcheck --version
-$ bundle exec exe/tailcheck --help
-$ bundle exec exe/tailcheck test/data/pos_duplicate_unwatched_path
+$ bundle exec exe/fluent-tailcheck --version
+$ bundle exec exe/fluent-tailcheck --help
+$ bundle exec exe/fluent-tailcheck test/data/pos_duplicate_unwatched_path
 ```
 
 ### Unit test

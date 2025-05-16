@@ -39,10 +39,10 @@ module Fluent
         parser = OptionParser.new
         parser.version = VERSION
         parser.banner = <<~BANNER
-          Usage: tailcheck [OPTIONS] POS_FILE...
-          Example: tailcheck /path/to/pos1 /path/to/pos2
-          Example: tailcheck /path/to/pos/*
-          Example: tailcheck --follow-inodes /path/to/pos_with_follow_inodes
+          Usage: fluent-tailcheck [OPTIONS] POS_FILE...
+          Example: fluent-tailcheck /path/to/pos1 /path/to/pos2
+          Example: fluent-tailcheck /path/to/pos/*
+          Example: fluent-tailcheck --follow-inodes /path/to/pos_with_follow_inodes
 
           If you have any issues with this command, please report it to https://github.com/clear-code/fluent-tail_checker/issues.
 

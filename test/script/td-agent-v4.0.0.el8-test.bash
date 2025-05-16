@@ -7,7 +7,7 @@ sudo dnf install -y ./td-agent-4.0.0-1.el8.x86_64.rpm
 
 sudo td-agent-gem install /vagrant/pkg/*
 
-tailcheck=/opt/td-agent/bin/tailcheck
+tailcheck=/opt/td-agent/bin/fluent-tailcheck
 
 $tailcheck --version
 $tailcheck --help

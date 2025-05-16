@@ -12,7 +12,7 @@ sudo yum install -y ./td-agent-3.1.1-0.el7.x86_64.rpm
 
 sudo td-agent-gem install /vagrant/pkg/*
 
-tailcheck=/opt/td-agent/embedded/lib/ruby/gems/2.4.0/bin/tailcheck
+tailcheck=/opt/td-agent/embedded/lib/ruby/gems/2.4.0/bin/fluent-tailcheck
 
 $tailcheck --version
 $tailcheck --help

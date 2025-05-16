@@ -23,9 +23,9 @@ function Test-Cmd([string]$Cmd, [switch]$ExpectFail) {
 }
 
 Test-Cmd "fluent-gem install pkg/*"
-Test-Cmd "tailcheck --version" 
-Test-Cmd "tailcheck --help"
-Test-Cmd "tailcheck test/data/pos_normal"
-Test-Cmd "tailcheck test/data/pos_normal test/data/pos_duplicate_unwatched_path" -ExpectFail
+Test-Cmd "fluent-tailcheck --version" 
+Test-Cmd "fluent-tailcheck --help"
+Test-Cmd "fluent-tailcheck test/data/pos_normal"
+Test-Cmd "fluent-tailcheck test/data/pos_normal test/data/pos_duplicate_unwatched_path" -ExpectFail
 
 exit 0

@@ -7,7 +7,7 @@ sudo apt install -y ./td-agent_3.1.1-0_amd64.deb
 
 sudo td-agent-gem install /vagrant/pkg/*
 
-tailcheck=/opt/td-agent/embedded/lib/ruby/gems/2.4.0/bin/tailcheck
+tailcheck=/opt/td-agent/embedded/lib/ruby/gems/2.4.0/bin/fluent-tailcheck
 
 $tailcheck --version
 $tailcheck --help
