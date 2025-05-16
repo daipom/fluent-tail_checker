@@ -61,14 +61,17 @@ $ fluent-tailcheck --help
 ### RPM/DEB (Linux)
 
 ```console
-$ sudo td-agent-gem install fluent-tail_checker
+$ sudo td-agent-gem install fluent-tail_checker --bindir /opt/td-agent/embedded/bin
 ```
 
 Then, you can use the command as follows.
 
 ```console
-$ /opt/td-agent/embedded/lib/ruby/gems/2.4.0/bin/fluent-tailcheck --help
+$ /opt/td-agent/embedded/bin/fluent-tailcheck --help
 ```
+
+Note: On td-agent v3, you need to specify `--bindir /opt/td-agent/embedded/bin` to install the executable under `/opt/td-agent/embedded/bin`.
+Without this, the executable will be installed under `/opt/td-agent/embedded/lib/ruby/gems/2.4.0/bin/`.
 
 ### .msi (Windows)
 
