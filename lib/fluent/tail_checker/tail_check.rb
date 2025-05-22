@@ -107,11 +107,12 @@ module Fluent
         puts "\nAll check completed. (Fluentd v#{Fluent::VERSION})"
 
         unless succeeded
-          puts "Some anomalies are found. Please check the logs for details."
-          puts "If you have any questions or issues, please report them to the following:"
-          puts "  Fluentd Q&A: https://github.com/fluent/fluentd/discussions/categories/q-a"
-          puts "  Fluentd Q&A (日本語用): https://github.com/fluent/fluentd/discussions/categories/q-a-japanese"
-          puts "  About this command (日本語可): https://github.com/clear-code/fluent-tail_checker/issues"
+          puts "Some anomalies are found. Please check the logs for details.",
+               "",
+               "If you have any questions or issues, please report them to the following:",
+               "  Fluentd Q&A: https://github.com/fluent/fluentd/discussions/categories/q-a",
+               "  Fluentd Q&A (日本語用): https://github.com/fluent/fluentd/discussions/categories/q-a-japanese",
+               "  About this command (日本語可): https://github.com/clear-code/fluent-tail_checker/issues"
           return false
         end
 
