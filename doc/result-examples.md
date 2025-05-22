@@ -31,6 +31,7 @@ Done collection ratio check for 0 files.
 
 All check completed. (Fluentd v1.15.0)
 Some anomalies are found. Please check the logs for details.
+
 If you have any questions or issues, please report them to the following:
   Fluentd Q&A: https://github.com/fluent/fluentd/discussions/categories/q-a
   Fluentd Q&A (日本語用): https://github.com/fluent/fluentd/discussions/categories/q-a-japanese
@@ -59,6 +60,7 @@ Filepaths with too low collection ratio (threshold: 0.5):
 
 All check completed. (Fluentd v1.15.0)
 Some anomalies are found. Please check the logs for details.
+
 If you have any questions or issues, please report them to the following:
   Fluentd Q&A: https://github.com/fluent/fluentd/discussions/categories/q-a
   Fluentd Q&A (日本語用): https://github.com/fluent/fluentd/discussions/categories/q-a-japanese
